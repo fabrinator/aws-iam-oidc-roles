@@ -1,0 +1,33 @@
+name: Terraform
+run-name: Terraform workflow
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+env:
+  AWS_REGION: "us-east-1"
+  DIR_TEMPLATES: tf_create_templates
+  DIR_TERRAFORM: terraform
+
+jobs:
+  configure_auth:
+    runs-on: ubuntu-latest
+    name: Requirements
+    environment:  auto
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - run: mkdir $HOME/.aws
+      - run: mv .aws.config $HOME/.aws/config
+        working-directory: ${{ env.DIR_TEMPLATES }}
+      - run : aws sso login  --no-browser
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.2"
+      - run: terraform init && terraform apply -auto-approve
+        working-directory: ${{ env.DIR_TEMPLATES }}
+      - run: terraform init && terraform apply -auto-approve
+        working-directory: ${{ env.DIR_TERRAFORM }}
+      - run: aws sso logout

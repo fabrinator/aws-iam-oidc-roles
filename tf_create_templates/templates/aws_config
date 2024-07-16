@@ -1,0 +1,16 @@
+[profile default]
+sso_session = sso-main
+sso_account_id = 519776006908
+sso_role_name = Administrators
+[sso-session sso-main]
+sso_start_url = https://fabririvas.awsapps.com/start
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+%{ for key, value in all_accounts ~}
+[profile ${key}]
+sso_session = sso-main
+sso_role_name = Administrators
+sso_account_id = ${value}
+%{ endfor ~}
+
