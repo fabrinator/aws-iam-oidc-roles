@@ -1,0 +1,7 @@
+%{ for key, value in all_accounts ~}
+provider "aws" {
+  profile = "${key}"
+  alias = "${key}"
+  region = "${region}"
+}
+%{ endfor ~}
